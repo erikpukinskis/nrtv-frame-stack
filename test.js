@@ -6,9 +6,10 @@ requirejs(
   function(FrameStack) {
     var expect = chai.expect
 
-    function stackEggsAndBeans() {
-      var food = new FrameStack()
+    var food = new FrameStack()
+    stackEggsAndBeans()
 
+    function stackEggsAndBeans() {
       food.default("egg", {yolkCounts: []})
 
       food.default("bean", {sproutedCount: 0})
@@ -53,7 +54,7 @@ requirejs(
       expect(secondFrame("egg").yolkCounts)
       .to.deep.equal([1,1,2,1])
 
-      console.log("durrrrr")
+      console.log("aw yiss")
     }
 
 })

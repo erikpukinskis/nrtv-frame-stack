@@ -12,49 +12,48 @@ function clone(attributes) {
 
 define(function() {
 
-  function Collectives() {
-    this.stacks = {}
-    this.framePositions = {}
+  function FrameStack() {
+    this._frame = {}
     this.defaults = {}
   }
 
-  Collectives.prototype.default =
+  FrameStack.prototype.default =
     function(name, attributes) {
-      this.framePositions[name] = 0
       this.defaults[name] = attributes
-      this.stacks[name] = [clone(attributes)]
+      this._frame[name] = clone(attributes)
     }
 
-  function getCollective(stacks, positions, name) {
-    return stacks[name][positions[name]]    
+  function getValue(frame, key) {
+    var value = frame[key]
+    return value
   }
 
-  Collectives.prototype.getFrame =
-    function(resets) {
-      var stacks = this.stacks
-      var noResets = !resets || resets.length < 1
+  FrameStack.prototype.frame =
+    function(resets, callback) {
+      if (!callback) {
+        callback = resets
+        resets = undefined
+      }
 
-      var positions = this.framePositions
+      var originalFrame = this._frame
 
-      if (noResets) {
-        return getCollective.bind(
-          null, stacks, positions
+      if (!resets) {
+        callback(
+          getValue.bind(null, originalFrame)
+        )
+      } else {
+        newFrame = clone(this._frame)
+
+        for(var i=0; i<resets.length; i++) {
+          var key = resets[i]
+          newFrame[key] = clone(this.defaults[key])
+        }
+
+        callback(
+          getValue.bind(null, newFrame)
         )
       }
-
-      positions = clone(positions)
-
-      for(var i=0; i<resets.length; i++) {
-        var name = resets[i]
-        var collective = clone(this.defaults[name])
-        var newPosition = stacks[name].push(collective) - 1
-        positions[name] = newPosition
-      }
-
-      return getCollective.bind(
-        null, stacks, positions
-      )
     }
 
-  return Collectives
+  return FrameStack
 })
