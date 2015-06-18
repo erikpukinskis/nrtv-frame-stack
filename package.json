@@ -1,0 +1,9 @@
+{
+  "name": "nrtv-collectives",
+  "devDependencies": {
+    "chai": "*"
+  },
+  "scripts": {
+    "test": "node test.js"
+  }
+}
