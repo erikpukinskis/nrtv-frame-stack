@@ -3,16 +3,24 @@ var chai = require("chai")
 
 requirejs(
   ["frame-stack"],
-  function(FrameStack) {
+  function(SingletonFrameStack) {
     var expect = chai.expect
 
-    var food = new FrameStack()
+    var food = new SingletonFrameStack()
     stackEggsAndBeans()
 
     function stackEggsAndBeans() {
-      food.default("egg", {yolkCounts: []})
+      food.generator("egg",
+        function() {
+          return {yolkCounts: []}
+        }
+      )
 
-      food.default("bean", {sproutedCount: 0})
+      food.generator("bean",
+        function() {
+          return {sproutedCount: 0}
+        }
+      )
 
       var firstFrame
       var secondFrame

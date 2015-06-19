@@ -12,15 +12,15 @@ function clone(attributes) {
 
 define(function() {
 
-  function FrameStack() {
+  function SingletonFrameStack() {
     this._frame = {}
-    this.defaults = {}
+    this.generators = {}
   }
 
-  FrameStack.prototype.default =
-    function(name, attributes) {
-      this.defaults[name] = attributes
-      this._frame[name] = clone(attributes)
+  SingletonFrameStack.prototype.generator =
+    function(name, generator) {
+      this.generators[name] = generator
+      this._frame[name] = generator()
     }
 
   function getValue(frame, key) {
@@ -28,7 +28,7 @@ define(function() {
     return value
   }
 
-  FrameStack.prototype.frame =
+  SingletonFrameStack.prototype.frame =
     function(resets, callback) {
       if (!callback) {
         callback = resets
@@ -46,7 +46,7 @@ define(function() {
 
         for(var i=0; i<resets.length; i++) {
           var key = resets[i]
-          newFrame[key] = clone(this.defaults[key])
+          newFrame[key] = this.generators[key]()
         }
 
         callback(
@@ -55,5 +55,5 @@ define(function() {
       }
     }
 
-  return FrameStack
+  return SingletonFrameStack
 })
