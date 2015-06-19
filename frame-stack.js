@@ -12,48 +12,42 @@ function clone(attributes) {
 
 define(function() {
 
-  function SingletonFrameStack() {
-    this._frame = {}
-    this.generators = {}
+  function SingletonFrame(generators, frame) {
+    this.frame = frame || {}
+    this.generators = generators || {}
   }
 
-  SingletonFrameStack.prototype.generator =
+  SingletonFrame.prototype.describe =
     function(name, generator) {
       this.generators[name] = generator
-      this._frame[name] = generator()
+      this.frame[name] = generator()
     }
 
-  function getValue(frame, key) {
-    var value = frame[key]
-    return value
-  }
+  SingletonFrame.prototype.get =
+    function(name) {
+      return this.frame[name]
+    }
 
-  SingletonFrameStack.prototype.frame =
-    function(resets, callback) {
-      if (!callback) {
-        callback = resets
-        resets = undefined
-      }
+  SingletonFrame.prototype.reset =
+    function(resets) {
+      var noResets = !resets || resets.length == []
 
-      var originalFrame = this._frame
-
-      if (!resets) {
-        callback(
-          getValue.bind(null, originalFrame)
-        )
+      if (noResets) {
+        return this
       } else {
-        newFrame = clone(this._frame)
+        newFrame = clone(this.frame)
 
         for(var i=0; i<resets.length; i++) {
           var key = resets[i]
           newFrame[key] = this.generators[key]()
         }
 
-        callback(
-          getValue.bind(null, newFrame)
+        return new SingletonFrame(
+          this.generators,
+          newFrame
         )
       }
     }
 
-  return SingletonFrameStack
+  return SingletonFrame
 })

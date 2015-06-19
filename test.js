@@ -3,66 +3,50 @@ var chai = require("chai")
 
 requirejs(
   ["frame-stack"],
-  function(SingletonFrameStack) {
+  function(SingletonFrame) {
     var expect = chai.expect
 
-    var food = new SingletonFrameStack()
-    stackEggsAndBeans()
+    var firstFrame = new SingletonFrame()
 
-    function stackEggsAndBeans() {
-      food.generator("egg",
-        function() {
-          return {yolkCounts: []}
-        }
-      )
+    firstFrame.describe("egg",
+      function() {
+        return {yolkCounts: []}
+      }
+    )
 
-      food.generator("bean",
-        function() {
-          return {sproutedCount: 0}
-        }
-      )
+    firstFrame.describe("bean",
+      function() {
+        return {sproutedCount: 0}
+      }
+    )
 
-      var firstFrame
-      var secondFrame
+    firstFrame.get("egg").yolkCounts.push(1)
+    firstFrame.get("egg").yolkCounts.push(1)
 
-      food.frame(eggsAndASprout)      
-    }
+    firstFrame.get("bean").sproutedCount++
 
-    function eggsAndASprout(frame) {
-      firstFrame = frame
+    secondFrame = firstFrame.reset(["bean"])
 
-      firstFrame("egg").yolkCounts.push(1)
-      firstFrame("egg").yolkCounts.push(1)
+    firstFrame.get("egg").yolkCounts.push(2)
 
-      firstFrame("bean").sproutedCount++
+    expect(firstFrame.get("egg").yolkCounts)
+    .to.deep.equal([1,1,2])
 
-      food.frame(["bean"], funkyYolks)
-    }
+    expect(secondFrame.get("egg").yolkCounts)
+    .to.deep.equal([1,1,2])
 
-    function funkyYolks(frame) {
-      secondFrame = frame
+    expect(firstFrame.get("bean").sproutedCount).to.equal(1)
 
-      firstFrame("egg").yolkCounts.push(2)
+    expect(secondFrame.get("bean").sproutedCount).to.equal(0)
 
-      expect(firstFrame("egg").yolkCounts)
-      .to.deep.equal([1,1,2])
+    secondFrame.get("egg").yolkCounts.push(1)
 
-      expect(secondFrame("egg").yolkCounts)
-      .to.deep.equal([1,1,2])
+    expect(firstFrame.get("egg").yolkCounts)
+    .to.deep.equal([1,1,2,1])
 
-      expect(firstFrame("bean").sproutedCount).to.equal(1)
+    expect(secondFrame.get("egg").yolkCounts)
+    .to.deep.equal([1,1,2,1])
 
-      expect(secondFrame("bean").sproutedCount).to.equal(0)
-
-      secondFrame("egg").yolkCounts.push(1)
-
-      expect(firstFrame("egg").yolkCounts)
-      .to.deep.equal([1,1,2,1])
-
-      expect(secondFrame("egg").yolkCounts)
-      .to.deep.equal([1,1,2,1])
-
-      console.log("aw yiss")
-    }
+    console.log("aw yiss")
 
 })
