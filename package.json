@@ -10,9 +10,9 @@
     "chai": "*"
   },
   "license": "ISC",
-  "homepage": "https://github.com/erikpukinskis/nrtv-frame-stack",
+  "homepage": "https://github.com/erikpukinskis/nrtv-singleton-frame",
   "repository": {
     "type": "git",
-    "url": "https://github.com/erikpukinskis/nrtv-frame-stack.git"
+    "url": "https://github.com/erikpukinskis/nrtv-singleton-frame.git"
   }
 }
