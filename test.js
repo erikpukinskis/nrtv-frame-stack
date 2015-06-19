@@ -2,7 +2,7 @@ requirejs = require("requirejs")
 var chai = require("chai")
 
 requirejs(
-  ["frame-stack"],
+  ["singleton-frame"],
   function(SingletonFrame) {
     var expect = chai.expect
 

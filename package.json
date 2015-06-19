@@ -1,8 +1,8 @@
 {
-  "name": "nrtv-frame-stack",
+  "name": "nrtv-singleton-frame",
   "description": "Layered realities",
-  "version": "0.2.0",
-  "main": "frame-stack.js",
+  "version": "0.3.0",
+  "main": "singleton-frame.js",
   "scripts": {
     "test": "node test.js"
   },
